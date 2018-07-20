@@ -100,24 +100,27 @@ class MigrationManager extends Plugin
             }
         );
 
-        // Register Element Actions
-        Event::on(Entry::class, Element::EVENT_REGISTER_ACTIONS,
-            function(RegisterElementActionsEvent $event) {
-                $event->actions[] = MigrateEntryElementAction::class;
-            }
-        );
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        if ($currentUser->can('accessPlugin-migrationmanager')) {        
+            // Register Element Actions
+            Event::on(Entry::class, Element::EVENT_REGISTER_ACTIONS,
+                function(RegisterElementActionsEvent $event) {
+                    $event->actions[] = MigrateEntryElementAction::class;
+                }
+            );
 
-        Event::on(Category::class, Element::EVENT_REGISTER_ACTIONS,
-            function(RegisterElementActionsEvent $event) {
-                $event->actions[] = MigrateCategoryElementAction::class;
-            }
-        );
+            Event::on(Category::class, Element::EVENT_REGISTER_ACTIONS,
+                function(RegisterElementActionsEvent $event) {
+                    $event->actions[] = MigrateCategoryElementAction::class;
+                }
+            );
 
-        Event::on(User::class, Element::EVENT_REGISTER_ACTIONS,
-            function(RegisterElementActionsEvent $event) {
-                $event->actions[] = MigrateUserElementAction::class;
-            }
-        );
+            Event::on(User::class, Element::EVENT_REGISTER_ACTIONS,
+                function(RegisterElementActionsEvent $event) {
+                    $event->actions[] = MigrateUserElementAction::class;
+                }
+            );
+        }
 
         $request = Craft::$app->getRequest();
         if (!$request->getIsConsoleRequest() && $request->getSegment(1) == 'globals'){
